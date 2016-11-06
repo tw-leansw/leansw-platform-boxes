@@ -31,7 +31,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # box
   config.vm.box              = "file://builds/virtualbox-ubuntu1404.box"
   # ssh
-  config.ssh.username         = 'vagrant'
+  config.ssh.username         = 'scaleworks'
   config.ssh.insert_key       = false
   config.ssh.forward_agent    = true
   config.ssh.private_key_path = ["#{ENV['HOME']}/.ssh/id_rsa", "#{ENV['HOME']}/.vagrant.d/insecure_private_key"]
@@ -43,7 +43,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.cpus = 1
     v.memory = 1024
     v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
-    v.customize ["modifyvm", :id, "--ioapic", "on"]
     v.customize [
             "storageattach", :id,
             "--storagectl", "IDE Controller",
@@ -54,5 +53,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         ]
   end
 
-  config.vm.network :private_network, ip: "172.16.3.2"
+  config.vm.network :private_network, ip: "10.245.7.2"
 end

@@ -23,17 +23,10 @@ disable_root: true
 # This will cause the set+update hostname module to not operate (if true)
 preserve_hostname: false
 
-# Force only Ec2 being enabled
-datasource_list: ['Ec2']
-datasource:
-   Ec2:
-     metadata_urls: [ 'http://169.254.169.254' ]
-     timeout: 5 # (defaults to 50 seconds)
-     max_wait: 10 # (defaults to 120 seconds)
-
 # The modules that run in the 'init' stage
 cloud_init_modules:
  - migrator
+ - seed_random
  - bootcmd
  - write-files
  - growpart
@@ -51,6 +44,7 @@ cloud_config_modules:
 # Emit the cloud config ready event
 # this can be used by upstart jobs for 'start on cloud-config'.
  - emit_upstart
+ - disk_setup
  - mounts
  - ssh-import-id
  - locale
@@ -72,6 +66,7 @@ cloud_config_modules:
 # The modules that run in the 'final' stage
 cloud_final_modules:
  - rightscale_userdata
+ - scripts-vendor
  - scripts-per-once
  - scripts-per-boot
  - scripts-per-instance
@@ -89,10 +84,10 @@ system_info:
    distro: ubuntu
    # Default user name + that default users groups (if added/used)
    default_user:
-     name: ubuntu
+     name: scaleworks
      lock_passwd: True
-     gecos: Ubuntu
-     groups: [adm, audio, cdrom, dialout, floppy, video, plugdev, dip, sudo]
+     gecos: Cloud User
+     groups: [adm, audio, cdrom, dialout, dip, floppy, netdev, plugdev, sudo, video]
      sudo: ["ALL=(ALL) NOPASSWD:ALL"]
      shell: /bin/bash
    # Other config here will be given to the distro class and/or path classes
@@ -100,8 +95,4 @@ system_info:
       cloud_dir: /var/lib/cloud/
       templates_dir: /etc/cloud/templates/
       upstart_dir: /etc/init/
-   package_mirrors:
-     - arches: [default]
-       failsafe:
-         primary: http://ubuntu.osuosl.org/ubuntu/
 EOF
